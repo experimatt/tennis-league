@@ -1,0 +1,105 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// League Admins only
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  name         String
+  role         String   @default("admin")
+  createdAt    DateTime @default(now()) @map("created_at")
+  
+  // Relations
+  adminLeagues League[] @relation("AdminLeagues")
+  createdMatches Match[] @relation("CreatedMatches")
+  
+  @@map("users")
+}
+
+// All participants
+model Player {
+  id       String  @id @default(cuid())
+  name     String
+  email    String?
+  phone    String?
+  username String? @unique
+  location String?
+  rating   String?
+  group    String?
+  createdAt DateTime @default(now()) @map("created_at")
+  
+  // Relations
+  player1Matches Match[] @relation("Player1Matches")
+  player2Matches Match[] @relation("Player2Matches")
+  wonMatches     Match[] @relation("WonMatches")
+  
+  @@map("players")
+}
+
+// Future-proofing, start with one
+model League {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  adminId     String   @map("admin_id")
+  status      String   @default("active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  
+  // Relations
+  admin   User    @relation("AdminLeagues", fields: [adminId], references: [id])
+  matches Match[]
+  
+  @@map("leagues")
+}
+
+// Match metadata, scores tracked in sets
+model Match {
+  id          String    @id @default(cuid())
+  leagueId    String    @map("league_id")
+  player1Id   String    @map("player1_id")
+  player2Id   String    @map("player2_id")
+  winnerId    String?   @map("winner_id")
+  datePlayed  DateTime? @map("date_played") @db.Date
+  createdAt   DateTime  @default(now()) @map("created_at")
+  createdBy   String    @map("created_by")
+  
+  // Relations
+  league  League @relation(fields: [leagueId], references: [id])
+  player1 Player @relation("Player1Matches", fields: [player1Id], references: [id])
+  player2 Player @relation("Player2Matches", fields: [player2Id], references: [id])
+  winner  Player? @relation("WonMatches", fields: [winnerId], references: [id])
+  creator User   @relation("CreatedMatches", fields: [createdBy], references: [id])
+  sets    Set[]
+  
+  @@map("matches")
+}
+
+// Tennis scoring - one match has multiple sets
+model Set {
+  id           String   @id @default(cuid())
+  matchId      String   @map("match_id")
+  setNumber    Int      @map("set_number")
+  player1Games Int      @map("player1_games")
+  player2Games Int      @map("player2_games")
+  createdAt    DateTime @default(now()) @map("created_at")
+  
+  // Relations
+  match Match @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  
+  @@unique([matchId, setNumber])
+  @@map("sets")
+}
