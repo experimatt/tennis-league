@@ -36,7 +36,7 @@ export default function Home() {
               <div className="bg-blue-100 p-6 rounded-lg">
                 <h3 className="text-lg font-medium text-gray-900">Player Management</h3>
                 <p className="mt-2 text-gray-600">
-                  Add, edit, and manage all players in your league
+                  Add, edit, and manage players in your league
                 </p>
               </div>
             </div>

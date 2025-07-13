@@ -12,9 +12,9 @@ export default function LoginPage() {
             Sign in to manage your tennis league
           </p>
         </div>
-        
+
         <LoginForm />
-        
+
         <div className="text-center text-sm text-gray-500">
           Use: admin@example.com / admin123
         </div>
