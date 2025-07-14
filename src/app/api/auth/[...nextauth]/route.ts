@@ -44,6 +44,9 @@ const authOptions = {
       }
     })
   ],
+  pages: {
+    signIn: "/login",
+  },
   session: {
     strategy: "jwt" as const,
   },
@@ -55,15 +58,12 @@ const authOptions = {
       return token
     },
     async session({ session, token }: any) {
-      if (token && session.user) {
+      if (token) {
         session.user.id = token.sub
         session.user.role = token.role
       }
       return session
     },
-  },
-  pages: {
-    signIn: "/login",
   },
 }
 

@@ -40,6 +40,28 @@ async function main() {
   }
 
   console.log("Created default league:", defaultLeague);
+
+  // Create some sample players for testing
+  const samplePlayers = [
+    { name: "John Smith", email: "john@example.com", username: "jsmith" },
+    { name: "Sarah Johnson", email: "sarah@example.com", username: "sjohnson" },
+    { name: "Mike Davis", email: "mike@example.com", username: "mdavis" },
+    { name: "Emily Wilson", email: "emily@example.com", username: "ewilson" },
+    { name: "Chris Brown", email: "chris@example.com", username: "cbrown" },
+  ];
+
+  for (const playerData of samplePlayers) {
+    const existingPlayer = await prisma.player.findFirst({
+      where: { name: playerData.name },
+    });
+
+    if (!existingPlayer) {
+      const player = await prisma.player.create({
+        data: playerData,
+      });
+      console.log("Created player:", player.name);
+    }
+  }
 }
 
 main()

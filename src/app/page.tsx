@@ -1,6 +1,9 @@
 import Link from "next/link"
+import { getDefaultLeagueUrl } from "@/lib/league"
 
-export default function Home() {
+export default async function Home() {
+  const defaultLeagueUrl = await getDefaultLeagueUrl()
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -21,10 +24,10 @@ export default function Home() {
                 Admin Login
               </Link>
               <Link
-                href="/players"
+                href={defaultLeagueUrl}
                 className="inline-flex items-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >
-                View Players
+                View League
               </Link>
             </div>
           </div>
