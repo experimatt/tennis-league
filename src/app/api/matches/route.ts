@@ -1,19 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import prisma from "@/lib/prisma"
-
-interface SetData {
-  player1Games: number
-  player2Games: number
-}
-
-interface MatchSubmission {
-  leagueId: string
-  player1Id: string
-  player2Id: string
-  winnerId: string
-  datePlayed: string
-  sets: SetData[]
-}
+import { MatchSubmission } from "@/types"
 
 export async function POST(request: NextRequest) {
   try {

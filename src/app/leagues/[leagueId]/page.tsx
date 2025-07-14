@@ -2,17 +2,12 @@ import Link from "next/link"
 import { getLeagueById } from "@/lib/league"
 import { notFound } from "next/navigation"
 import { PrismaClient } from "@/generated/prisma"
+import { LeaguePageProps } from "@/types"
 
 const prisma = new PrismaClient()
 
-interface LeaguePageProps {
-  params: {
-    leagueId: string
-  }
-}
-
 export default async function LeaguePage({ params }: LeaguePageProps) {
-  const leagueId = params.leagueId
+  const { leagueId } = await params
   
   try {
     // Get league data using the dynamic function

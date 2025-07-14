@@ -3,17 +3,12 @@ import { getLeagueById } from "@/lib/league"
 import { notFound } from "next/navigation"
 import MatchReportForm from "./match-report-form"
 import { PrismaClient } from "@/generated/prisma"
+import { ScoreEntryPageProps } from "@/types"
 
 const prisma = new PrismaClient()
 
-interface ScoreEntryPageProps {
-  params: {
-    leagueId: string
-  }
-}
-
 export default async function ScoreEntryPage({ params }: ScoreEntryPageProps) {
-  const leagueId = params.leagueId
+  const { leagueId } = await params
   
   try {
     // Get league data using dynamic function

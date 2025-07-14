@@ -1,13 +1,7 @@
 'use client'
 
 import React, { createContext, useContext, useEffect, useState } from 'react'
-import { League } from '../generated/prisma'
-
-interface LeagueContextType {
-  currentLeague: League | null
-  setCurrentLeague: (league: League | null) => void
-  isLoading: boolean
-}
+import { League, LeagueContextType } from '@/types'
 
 const LeagueContext = createContext<LeagueContextType | undefined>(undefined)
 

@@ -2,23 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-
-interface Player {
-  id: string
-  name: string
-  email: string | null
-}
-
-interface Set {
-  player1Games: number
-  player2Games: number
-}
-
-interface MatchReportFormProps {
-  players: Player[]
-  leagueId: string
-  leagueSlug: string
-}
+import { SetFormData, MatchReportFormProps } from "@/types"
 
 export default function MatchReportForm({ players, leagueId, leagueSlug }: MatchReportFormProps) {
   const router = useRouter()
@@ -29,7 +13,7 @@ export default function MatchReportForm({ players, leagueId, leagueSlug }: Match
   const [player1Id, setPlayer1Id] = useState("")
   const [player2Id, setPlayer2Id] = useState("")
   const [datePlayed, setDatePlayed] = useState(new Date().toISOString().split('T')[0])
-  const [sets, setSets] = useState<Set[]>([
+  const [sets, setSets] = useState<SetFormData[]>([
     { player1Games: 0, player2Games: 0 }
   ])
 
@@ -43,7 +27,7 @@ export default function MatchReportForm({ players, leagueId, leagueSlug }: Match
     }
   }
 
-  const updateSet = (index: number, field: 'player1Games' | 'player2Games', value: number) => {
+  const updateSet = (index: number, field: keyof SetFormData, value: number) => {
     const updatedSets = sets.map((set, i) => 
       i === index ? { ...set, [field]: value } : set
     )

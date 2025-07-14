@@ -2,6 +2,7 @@ import NextAuth from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import bcrypt from "bcrypt"
 import prisma from "@/lib/prisma"
+import { Credentials, AuthUser, AuthToken, AuthSession } from "@/types"
 
 const authOptions = {
   providers: [
@@ -11,7 +12,7 @@ const authOptions = {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" }
       },
-      async authorize(credentials: any) {
+      async authorize(credentials: Credentials | undefined) {
         if (!credentials?.email || !credentials?.password) {
           return null
         }
@@ -51,22 +52,23 @@ const authOptions = {
     strategy: "jwt" as const,
   },
   callbacks: {
-    async jwt({ token, user }: any) {
+    async jwt({ token, user }: { token: AuthToken; user?: AuthUser }) {
       if (user) {
         token.role = user.role
       }
       return token
     },
-    async session({ session, token }: any) {
+    async session({ session, token }: { session: AuthSession; token: AuthToken }) {
       if (token) {
-        session.user.id = token.sub
-        session.user.role = token.role
+        session.user.id = token.sub as string
+        session.user.role = token.role as string
       }
       return session
     },
   },
 }
 
+// @ts-expect-error prevent type error
 const handler = NextAuth(authOptions)
 
 export { handler as GET, handler as POST } 
